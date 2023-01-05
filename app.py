@@ -2,7 +2,7 @@
 import os
 
 from flask import Flask, request, current_app
-from ckip_transformers.nlp import CkipWordSegmenter, CkipPosTagger, CkipNerChunker
+from ckip_transformers.nlp import CkipWordSegmenter
 
 
 app = Flask(__name__)
@@ -17,8 +17,6 @@ app.config |= {
             model=app.config['CKIP_TRANSFORMER_MODEL'],
         ) for name, Cls in {
             'ws': CkipWordSegmenter,
-            'pos': CkipPosTagger,
-            'ner': CkipNerChunker,
         }.items()
     },
 }
