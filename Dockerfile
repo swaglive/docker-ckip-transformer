@@ -1,20 +1,37 @@
-ARG         base=alpine
+ARG         base=python:3.10.9-slim-buster
+
 
 ###
 
 FROM        ${base} as build
 
-ARG         version=
-ARG         repo=
+ARG         version=0.3.2
 
-RUN         apk add --no-cache --virtual .build-deps \
-                build-base && \
-            wget -O - https://github.com/${repo}/archive/refs/tags/v${version}.tar.gz | tar xz
+WORKDIR     /usr/src/app
+COPY        requirements.txt .
+
+RUN         apt-get update && \
+            apt-get install -y \
+                build-essential && \
+            pip install -r requirements.txt ckip-transformers==${version} && \
+            apt-get remove -y build-essential
 
 ###
 
 FROM        ${base}
 
-COPY        --from=build /usr/local/bin /usr/local/bin
-COPY        --from=build /usr/local/include /usr/local/include
-COPY        --from=build /usr/local/lib /usr/local/lib
+ARG         model=bert-base
+
+WORKDIR     /usr/src/app
+
+ENV         PYTHONUNBUFFERED=1
+ENV         CKIP_TRANSFORMER_MODEL=${model}
+
+EXPOSE      8000/tcp
+CMD         ["uwsgi", "--ini", "config/uwsgi.ini", "--http", ":8000"]
+
+COPY        --from=build /usr/local /usr/local
+COPY        app.py app.py
+COPY        config/uwsgi.ini config/uwsgi.ini
+
+RUN         flask shell

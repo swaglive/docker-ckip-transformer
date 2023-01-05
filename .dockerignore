@@ -1,0 +1,13 @@
+.*
+*.p12
+*.json
+*.yaml
+*.yml
+*.md
+*.pid
+*.pyc
+*.pyo
+__pycache__/*
+
+Dockerfile
+extras/
