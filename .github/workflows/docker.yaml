@@ -15,6 +15,9 @@ jobs:
       matrix:
         ckip_transformer_model: [bert-base]
         version: ["0.3.2"]
+        include:
+        - version: "0.3.2"
+          latest: 1
 
     steps:
     - name: Checkout
@@ -54,7 +57,7 @@ jobs:
           ghcr.io/${{ steps.config.outputs.repo-owner }}/${{ steps.config.outputs.repo-name }}
         flavor: |-
           latest=${{ !!matrix.latest }}
-          suffix=${{ matrix.ckip_transformer_model }}
+          suffix=-${{ matrix.ckip_transformer_model }}
         tags: |-
           type=raw,value=${{ matrix.version }}
 
