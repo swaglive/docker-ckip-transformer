@@ -21,5 +21,5 @@ ws_driver, pos_driver, ner_driver = [
 
 @app.route('/tokenize', methods=['GET'], endpoint='tokenize')
 def tokenize():
-  tokens = ws_driver([request.args['text']])
-  return {'tokens': tokens[0]}
+  tokens = ws_driver(request.args.getlist('text'))
+  return {'tokens': tokens}
