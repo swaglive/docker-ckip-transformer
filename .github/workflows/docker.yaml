@@ -13,9 +13,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        base: ['python:3.10.6-slim-buster']
-        ckip_transformer_model: ['bert-base']
-        version: ['0.3.2']
+        base: [python:3.10.6-slim-buster]
+        ckip_transformer_model: [bert-base]
+        version: ["0.3.2"]
 
     steps:
     - name: Checkout
@@ -34,11 +34,11 @@ jobs:
     - name: Setup - Setup buildx
       uses: docker/setup-buildx-action@v2
 
-    # - name: Setup - Docker Hub
-    #   uses: docker/login-action@v2
-    #   with:
-    #     username: ${{ secrets.DOCKERHUB_USERNAME }}
-    #     password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Setup - Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
 
     - name: Setup - Github Container Registry
       uses: docker/login-action@v2
@@ -51,12 +51,13 @@ jobs:
       id: meta
       uses: docker/metadata-action@v4
       with:
-        # ${{ steps.config.outputs.repo-owner }}/${{ steps.config.outputs.repo-name }}
         images: |-
           ghcr.io/${{ steps.config.outputs.repo-owner }}/${{ steps.config.outputs.repo-name }}
+          ${{ steps.config.outputs.repo-owner }}/${{ steps.config.outputs.repo-name }}
         flavor: |-
           latest=${{ !!matrix.latest }}
           suffix={{ matrix.ckip_transformer_model }}
+          prefix=qqq
         tags: |-
           type=semver,pattern={{major}}.{{minor}},value=${{ matrix.version }}
 
