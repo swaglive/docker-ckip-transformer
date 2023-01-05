@@ -13,7 +13,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: []
+        base: ['python:3.10.6-slim-buster']
+        ckip_transformer_model: ['bert-base']
 
     steps:
     - name: Checkout
@@ -54,6 +55,7 @@ jobs:
           ghcr.io/${{ steps.config.outputs.repo-owner }}/${{ steps.config.outputs.repo-name }}
         flavor: |-
           latest=${{ !!matrix.latest }}
+          suffix={{ matrix.ckip_transformer_model }}
         tags: |-
           type=semver,pattern={{major}}.{{minor}},value=${{ matrix.version }}
 
@@ -63,7 +65,8 @@ jobs:
       with:
         context: .
         build-args: |
-          version=${{ matrix.version }}
+          base=${{ matrix.base }}
+          ckip_transformer_model=${{ matrix.ckip_transformer_model }}
         push: true
         labels: ${{ steps.meta.outputs.labels }}
         tags: ${{ steps.meta.outputs.tags }}
