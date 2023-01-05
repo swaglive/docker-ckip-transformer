@@ -54,8 +54,7 @@ jobs:
           ghcr.io/${{ steps.config.outputs.repo-owner }}/${{ steps.config.outputs.repo-name }}
         flavor: |-
           latest=${{ !!matrix.latest }}
-          suffix={{ matrix.ckip_transformer_model }}
-          prefix=qqq
+          suffix=${{ matrix.ckip_transformer_model }}
         tags: |-
           type=semver,pattern={{major}}.{{minor}}.{{minor}},value=${{ matrix.version }}
 
