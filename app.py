@@ -28,4 +28,4 @@ ner_driver = CkipNerChunker(
 @app.route('/tokenize', methods=['GET'], endpoint='tokenize')
 def tokenize():
   tokens = ws_driver([request.args['text']])
-  return {'tokens': tokens}
+  return {'tokens': tokens[0]}
