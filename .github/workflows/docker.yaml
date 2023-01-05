@@ -15,6 +15,7 @@ jobs:
       matrix:
         base: ['python:3.10.6-slim-buster']
         ckip_transformer_model: ['bert-base']
+        version: ['0.3.2']
 
     steps:
     - name: Checkout
