@@ -1,4 +1,4 @@
-ARG         base=python:3.10.6-slim-buster
+ARG         base=python:3.10.9-slim-buster
 
 
 ###
@@ -6,30 +6,31 @@ ARG         base=python:3.10.6-slim-buster
 FROM        ${base} as build
 
 WORKDIR     /usr/src/app
-COPY        requirements.txt .
+COPY        poetry.lock .
+COPY        pyproject.toml .
 
 RUN         apt-get update && \
-            apt-get install -y build-essential && \
-            pip install -r requirements.txt
+            apt-get install -y \
+                build-essential && \
+            pip install poetry && \
+            poetry install -vv -n --only=main --no-root && \
+            apt-get remove build-essential
 
 ###
 
 FROM        ${base}
 
-ARG         ckip_transformer_model=bert-base
+ARG         model=bert-base
+
+WORKDIR     /usr/src/app
 
 ENV         PYTHONUNBUFFERED=1
-ENV         CKIP_TRANSFORMER_MODEL=${ckip_transformer_model}
+ENV         CKIP_TRANSFORMER_MODEL=${model}
 
 EXPOSE      8000/tcp
 CMD         ["uwsgi", "--ini", "config/uwsgi.ini", "--http", ":8000"]
 
-WORKDIR     /usr/src/app
+COPY        --from=build /usr/local /usr/local
+COPY        app.py app.py
 
-
-COPY        --from=build /usr/local/bin /usr/local/bin
-COPY        --from=build /usr/local/lib /usr/local/lib
-
-COPY        . .
-
-RUN         flask shell
+# RUN         flask shell
