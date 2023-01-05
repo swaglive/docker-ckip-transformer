@@ -5,16 +5,16 @@ ARG         base=python:3.10.9-slim-buster
 
 FROM        ${base} as build
 
+ARG         version=0.3.2
+
 WORKDIR     /usr/src/app
-COPY        poetry.lock .
-COPY        pyproject.toml .
+COPY        requirements.txt .
 
 RUN         apt-get update && \
             apt-get install -y \
                 build-essential && \
-            pip install poetry && \
-            poetry install -vv -n --only=main --no-root && \
-            apt-get remove build-essential
+            pip install -r requirements.txt ckip-transformers==${version} && \
+            apt-get remove -y build-essential
 
 ###
 
@@ -33,4 +33,4 @@ CMD         ["uwsgi", "--ini", "config/uwsgi.ini", "--http", ":8000"]
 COPY        --from=build /usr/local /usr/local
 COPY        app.py app.py
 
-# RUN         flask shell
+RUN         flask shell
