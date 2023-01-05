@@ -32,5 +32,6 @@ CMD         ["uwsgi", "--ini", "config/uwsgi.ini", "--http", ":8000"]
 
 COPY        --from=build /usr/local /usr/local
 COPY        app.py app.py
+COPY        config/uwsgi.ini config/uwsgi.ini
 
 RUN         flask shell
