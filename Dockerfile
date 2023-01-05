@@ -18,7 +18,7 @@ RUN         apt-get update && \
 
 ###
 
-FROM        ${base}
+FROM        python:3.10.6-slim-buster
 ###
 
 ARG         model=bert-base
