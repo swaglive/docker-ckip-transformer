@@ -7,23 +7,17 @@ from ckip_transformers.nlp import CkipWordSegmenter, CkipPosTagger, CkipNerChunk
 
 class Config:
   CKIP_DEVICE = os.environ.get('CKIP_DEVICE') or -1 
-  CKIP_TRANSFORMER_MODEL = os.environ.get('CKIP_TRANSFORMER_MODEL')
+  CKIP_TRANSFORMER_MODEL = os.environ.get('CKIP_TRANSFORMER_MODEL') or 'bert-base'
 
 app = Flask(__name__)
 app.config.from_object(Config())
 
-ws_driver = CkipWordSegmenter(
+ws_driver, pos_driver, ner_driver = [
+  driver(
     device=app.config['CKIP_DEVICE'], 
     model=app.config['CKIP_TRANSFORMER_MODEL'],
-)
-pos_driver = CkipPosTagger(
-  device=app.config['CKIP_DEVICE'], 
-  model=app.config['CKIP_TRANSFORMER_MODEL'],
-)
-ner_driver = CkipNerChunker(
-  device=app.config['CKIP_DEVICE'], 
-  model=app.config['CKIP_TRANSFORMER_MODEL'],
-)
+  ) for driver in [CkipWordSegmenter, CkipPosTagger, CkipNerChunker]
+]
 
 @app.route('/tokenize', methods=['GET'], endpoint='tokenize')
 def tokenize():
