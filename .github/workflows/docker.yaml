@@ -57,7 +57,7 @@ jobs:
           suffix={{ matrix.ckip_transformer_model }}
           prefix=qqq
         tags: |-
-          type=semver,pattern={{major}}.{{minor}},value=${{ matrix.version }}
+          type=semver,pattern={{major}}.{{minor}}.{{minor}},value=${{ matrix.version }}
 
     - name: Build
       uses: docker/build-push-action@v3
