@@ -13,7 +13,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: []
+        model:
+        - bert-base
+        version:
+        - "0.3.2"
 
     steps:
     - name: Checkout
@@ -53,9 +56,9 @@ jobs:
           ${{ steps.config.outputs.repo-owner }}/${{ steps.config.outputs.repo-name }}
           ghcr.io/${{ steps.config.outputs.repo-owner }}/${{ steps.config.outputs.repo-name }}
         flavor: |-
-          latest=${{ !!matrix.latest }}
+          suffix=-${{ matrix.model }}
         tags: |-
-          type=semver,pattern={{major}}.{{minor}},value=${{ matrix.version }}
+          type=semver,pattern={{major}}.{{minor}}.{{patch}},value=${{ matrix.version }}
 
     - name: Build
       uses: docker/build-push-action@v3
@@ -64,6 +67,7 @@ jobs:
         context: .
         build-args: |
           version=${{ matrix.version }}
+          model=${{ matrix.model }}
         push: true
         labels: ${{ steps.meta.outputs.labels }}
         tags: ${{ steps.meta.outputs.tags }}
