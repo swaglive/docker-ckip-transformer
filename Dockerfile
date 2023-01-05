@@ -33,4 +33,4 @@ COPY        --from=build /usr/local /usr/local
 COPY        app.py app.py
 COPY        config/uwsgi.ini config/uwsgi.ini
 
-RUN         DEBIAN_FRONTEND=noninteractive flask shell
+RUN         flask shell
