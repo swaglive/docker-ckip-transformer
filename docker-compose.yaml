@@ -3,9 +3,9 @@ version: '3.8'
 services:
   web:
     command: python3 -m flask run -h 0.0.0.0 -p 8000 --debugger --reload
-    env_file: .env
     build:
       context: .
+    env_file: .env
     volumes:
     - .:/usr/src/app/
     ports:
