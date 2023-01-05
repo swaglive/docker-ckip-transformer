@@ -19,7 +19,7 @@ app.config |= {
             'ws': CkipWordSegmenter,
             'pos': CkipPosTagger,
             'ner': CkipNerChunker,
-        }.items(),
+        }.items()
     },
 }
 
