@@ -1,0 +1,4 @@
+Flask==2.2.2
+ckip-transformers==0.3.2
+ipython==8.7.0
+uWSGI==2.0.21
