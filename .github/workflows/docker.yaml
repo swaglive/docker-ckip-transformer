@@ -15,6 +15,9 @@ jobs:
       matrix:
         model:
         - bert-base
+        - bert-tiny
+        - albert-base
+        - albert-tiny
         version:
         - "0.3.2"
 
