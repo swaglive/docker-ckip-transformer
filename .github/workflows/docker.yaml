@@ -51,7 +51,7 @@ jobs:
       uses: docker/metadata-action@v4
       with:
         images: |-
-          ${{ steps.config.outputs.repo-owner }}/${{ steps.config.outputs.repo-name }}
+          ghcr.io/${{ steps.config.outputs.repo-owner }}/${{ steps.config.outputs.repo-name }}
         flavor: |-
           latest=${{ !!matrix.latest }}
           suffix={{ matrix.ckip_transformer_model }}
