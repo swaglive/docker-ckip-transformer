@@ -1,6 +1,5 @@
 ARG         base=python:3.10.9-slim-buster
 
-
 ###
 
 FROM        ${base} as build
@@ -34,4 +33,4 @@ COPY        --from=build /usr/local /usr/local
 COPY        app.py app.py
 COPY        config/uwsgi.ini config/uwsgi.ini
 
-RUN         flask shell
+RUN         DEBIAN_FRONTEND=noninteractive flask shell
