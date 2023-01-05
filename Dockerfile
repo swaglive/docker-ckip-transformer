@@ -1,6 +1,5 @@
 ARG         base=python:3.10.9-slim-buster
 
-
 ###
 
 FROM        ${base} as build
