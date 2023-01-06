@@ -59,6 +59,7 @@ jobs:
           ${{ steps.config.outputs.repo-owner }}/${{ steps.config.outputs.repo-name }}
           ghcr.io/${{ steps.config.outputs.repo-owner }}/${{ steps.config.outputs.repo-name }}
         flavor: |-
+          latest=false
           suffix=-${{ matrix.model }}
         tags: |-
           type=semver,pattern={{major}}.{{minor}}.{{patch}},value=${{ matrix.version }}
