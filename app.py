@@ -32,9 +32,12 @@ app.config |= {
 
 @app.route('/tokenize', methods=['GET'], endpoint='tokenize')
 def tokenize():
-    return {
-        'tokens': current_app.config['CKIP_DRIVERS']['ws'](
-            input_text=request.args.getlist('text'),
+    tokens = []
+
+    if input_text := request.args.getlist('text'):
+        tokens = current_app.config['CKIP_DRIVERS']['ws'](
+            input_text=input_text,
             show_progress=False,
-        ),
-    }
+        )
+
+    return {'tokens': tokens}
