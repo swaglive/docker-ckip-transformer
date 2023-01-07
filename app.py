@@ -6,14 +6,6 @@ from ckip_transformers.nlp import CkipWordSegmenter
 
 
 app = Flask(__name__)
-
-@app.cli.command('touch')
-def touch():
-    """
-    Initialize app and load model.
-    """
-    pass
-
 app.config |= {
     'CKIP_DEVICE': os.environ.get('CKIP_DEVICE') or -1,
     'CKIP_TRANSFORMER_MODEL': os.environ.get('CKIP_TRANSFORMER_MODEL') or 'bert-base',
@@ -28,6 +20,11 @@ app.config |= {
         }.items()
     },
 }
+
+
+@app.cli.command('touch')
+def touch():
+    pass
 
 
 @app.route('/tokenize', methods=['GET'], endpoint='tokenize')
