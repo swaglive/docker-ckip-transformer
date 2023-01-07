@@ -72,6 +72,7 @@ jobs:
       id: build
       with:
         context: .
+        platforms: linux/amd64,linux/arm64/v8
         build-args: |
           version=${{ matrix.version }}
           model=${{ matrix.model }}
