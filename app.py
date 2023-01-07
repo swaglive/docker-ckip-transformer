@@ -35,5 +35,6 @@ def tokenize():
     return {
         'tokens': current_app.config['CKIP_DRIVERS']['ws'](
             input_text=request.args.getlist('text'),
+            show_progress=False,
         ),
     }
