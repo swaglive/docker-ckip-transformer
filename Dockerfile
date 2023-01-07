@@ -24,6 +24,8 @@ ARG         model=bert-base
 WORKDIR     /usr/src/app
 
 ENV         PYTHONUNBUFFERED=1
+ENV         FLASK_APP=app.py
+ENV         FLASK_SKIP_DOTENV=1
 ENV         CKIP_TRANSFORMER_MODEL=${model}
 
 EXPOSE      8000/tcp
