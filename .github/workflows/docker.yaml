@@ -38,6 +38,9 @@ jobs:
         echo "repo-owner=${{ github.repository_owner }}" >> $GITHUB_OUTPUT
         echo "repo-name=${GITHUB_REPOSITORY#*/docker-}" >> $GITHUB_OUTPUT
 
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v2
+
     - name: Setup - Setup buildx
       uses: docker/setup-buildx-action@v2
 
