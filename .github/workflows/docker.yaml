@@ -82,7 +82,7 @@ jobs:
         build-args: |
           version=${{ matrix.version }}
           model=${{ matrix.model }}
-        push: true
+        push: false
         labels: ${{ steps.meta.outputs.labels }}
         tags: ${{ steps.meta.outputs.tags }}
         cache-from: type=gha
