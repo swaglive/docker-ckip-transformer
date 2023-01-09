@@ -7,7 +7,7 @@ from ckip_transformers.nlp import CkipWordSegmenter
 
 app = Flask(__name__)
 app.config |= {
-    'CKIP_DEVICE': os.environ.get('CKIP_DEVICE') or -1,
+    'CKIP_DEVICE': int(os.environ.get('CKIP_DEVICE') or -1),
     'CKIP_TRANSFORMER_MODEL': os.environ.get('CKIP_TRANSFORMER_MODEL') or 'bert-base',
 }
 app.config |= {
