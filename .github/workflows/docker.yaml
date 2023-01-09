@@ -5,6 +5,7 @@ on:
     tags:
     branches:
     - master
+    - enhancement/add_arm-v8_platform
 
 jobs:
   build:
@@ -40,6 +41,8 @@ jobs:
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v2
+      with:
+        platforms: linux/amd64, linux/arm64
 
     - name: Setup - Setup buildx
       uses: docker/setup-buildx-action@v2
