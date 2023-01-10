@@ -2,13 +2,14 @@
 import os
 
 from flask import Flask, request, current_app, Response
-from ckip_transformers.nlp import CkipWordSegmenter
+
+from . import drivers
 
 
 app = Flask(__name__)
 app.config |= {
     'CKIP_DEVICE': int(os.environ.get('CKIP_DEVICE') or -1),
-    'CKIP_TRANSFORMER_MODEL': os.environ.get('CKIP_TRANSFORMER_MODEL') or 'bert-base',
+    'CKIP_TRANSFORMER_MODEL': os.environ.get('CKIP_TRANSFORMER_MODEL') or 'ckiplab/bert-base-chinese-ws',
 }
 app.config |= {
     'CKIP_DRIVERS': {
@@ -16,7 +17,7 @@ app.config |= {
             device=app.config['CKIP_DEVICE'], 
             model=app.config['CKIP_TRANSFORMER_MODEL'],
         ) for name, Cls in {
-            'ws': CkipWordSegmenter,
+            'ws': drivers.CkipWordSegmenter,
         }.items()
     },
 }
