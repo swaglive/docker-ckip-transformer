@@ -38,6 +38,11 @@ jobs:
         echo "repo-owner=${{ github.repository_owner }}" >> $GITHUB_OUTPUT
         echo "repo-name=${GITHUB_REPOSITORY#*/docker-}" >> $GITHUB_OUTPUT
 
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v2
+      with:
+        platforms: linux/amd64, linux/arm64
+
     - name: Setup - Setup buildx
       uses: docker/setup-buildx-action@v2
 
@@ -72,6 +77,7 @@ jobs:
       id: build
       with:
         context: .
+        platforms: linux/amd64,linux/arm64
         build-args: |
           version=${{ matrix.version }}
           model=${{ matrix.model }}
