@@ -1,8 +1,7 @@
+# -*- coding: utf-8 -*-
 from typing import (
     List,
-    NamedTuple,
     Optional,
-    Tuple,
     Union,
 )
 
@@ -23,7 +22,15 @@ from transformers import (
 )
 
 
+# REFERENCE: https://github.com/ckiplab/ckip-transformers/blob/master/ckip_transformers/nlp/driver.py
 class CkipWordSegmenter:
+    _ckip_models = {
+        'albert-tiny': 'ckiplab/albert-tiny-chinese-ws',
+        'albert-base': 'ckiplab/albert-base-chinese-ws',
+        'bert-tiny': 'ckiplab/bert-tiny-chinese-ws',
+        'bert-base': 'ckiplab/bert-base-chinese-ws',
+    }
+
     '''The base class for token classification task.
     Parameters
     ----------
@@ -38,13 +45,16 @@ class CkipWordSegmenter:
 
     def __init__(
         self,
-        model: str = 'ckiplab/bert-base-chinese-ws',
+        model: str = 'bert-base',
         tokenizer_name: Optional[str] = None,
         *,
         device: Union[int, torch.device] = -1,
     ):
-        self.model = AutoModelForTokenClassification.from_pretrained(model)
-        self.tokenizer = BertTokenizerFast.from_pretrained(tokenizer_name or model)
+
+        model_name = self._ckip_models[model]
+
+        self.model = AutoModelForTokenClassification.from_pretrained(model_name)
+        self.tokenizer = BertTokenizerFast.from_pretrained(tokenizer_name or model_name)
 
         # Allow passing a customized torch.device.
         if isinstance(device, torch.device):
