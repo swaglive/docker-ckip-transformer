@@ -12,7 +12,8 @@ COPY        requirements.txt .
 RUN         apt-get update && \
             apt-get install -y \
                 build-essential && \
-            pip install -r requirements.txt ckip-transformers==${version} && \
+            # pip install -r requirements.txt ckip-transformers==${version} && \
+            pip install -r requirements.txt && \
             apt-get remove -y build-essential
 
 ###
@@ -24,7 +25,7 @@ ARG         model=bert-base
 WORKDIR     /usr/src/app
 
 ENV         PYTHONUNBUFFERED=1
-ENV         FLASK_APP=app.py
+ENV         FLASK_APP=server/app.py
 ENV         FLASK_SKIP_DOTENV=1
 ENV         CKIP_TRANSFORMER_MODEL=${model}
 
@@ -32,7 +33,7 @@ EXPOSE      8000/tcp
 CMD         ["uwsgi", "--ini", "config/uwsgi.ini", "--http", ":8000"]
 
 COPY        --from=build /usr/local /usr/local
-COPY        app.py app.py
+COPY        server server
 COPY        config/uwsgi.ini config/uwsgi.ini
 
 RUN         flask touch
