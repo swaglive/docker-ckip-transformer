@@ -1,15 +1,10 @@
 # -*- coding: utf-8 -*-
-from typing import (
-    List,
-    Optional,
-    Union,
-)
-
-from tqdm import tqdm
-
+import torch
+import tqdm
 import numpy as np
 
-import torch
+from typing import Optional, Union
+
 from torch.utils.data import (
     DataLoader,
     TensorDataset,
@@ -67,7 +62,7 @@ class CkipWordSegmenter:
 
     def __call__(
         self,
-        input_text: Union[List[str], List[List[str]]],
+        input_text: Union[list[str], list[list[str]]],
         *,
         use_delim: bool = False,
         delim_set: Optional[str] = '，,。：:；;！!？?',
@@ -79,7 +74,7 @@ class CkipWordSegmenter:
         '''Call the driver.
         Parameters
         ----------
-            input_text : ``List[str]`` or ``List[List[str]]``
+            input_text : ``list[str]`` or ``list[list[str]]``
                 The input sentences. Each sentence is a string or a list of string.
             use_delim : ``bool``, *optional*, defaults to False
                 Segment sentence (internally) using ``delim_set``.
@@ -115,7 +110,7 @@ class CkipWordSegmenter:
 
         # Get worded input IDs
         if show_progress:
-            input_text = tqdm(input_text, desc='Tokenization')
+            input_text = tqdm.tqdm(input_text, desc='Tokenization')
 
         input_ids_worded = [
             [self.tokenizer.convert_tokens_to_ids(list(input_word)) for input_word in input_sent] for input_sent in input_text
@@ -152,7 +147,7 @@ class CkipWordSegmenter:
             pin_memory=pin_memory,
         )
         if show_progress:
-            dataloader = tqdm(dataloader, desc='Inference')
+            dataloader = tqdm.tqdm(dataloader, desc='Inference')
 
         # Call Model
         logits = []
