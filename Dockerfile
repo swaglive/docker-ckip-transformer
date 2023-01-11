@@ -12,7 +12,6 @@ COPY        requirements.txt .
 RUN         apt-get update && \
             apt-get install -y \
                 build-essential && \
-            # pip install -r requirements.txt ckip-transformers==${version} && \
             pip install -r requirements.txt && \
             apt-get remove -y build-essential
 
