@@ -16,6 +16,7 @@ from transformers import (
     BertTokenizerFast,
 )
 
+tokenizer = BertTokenizerFast.from_pretrained('ckiplab/bert-tiny-chinese-ws')
 
 # REFERENCE: https://github.com/ckiplab/ckip-transformers/blob/master/ckip_transformers/nlp/driver.py
 class CkipWordSegmenter:
@@ -26,7 +27,7 @@ class CkipWordSegmenter:
         'bert-base': 'ckiplab/bert-base-chinese-ws',
     }
 
-    '''The base class for token classification task.
+    """The base class for token classification task.
     Parameters
     ----------
         model_name : ``str``
@@ -36,7 +37,7 @@ class CkipWordSegmenter:
         device : ``int`` or ``torch.device``, *optional*, defaults to -1
             Device ordinal for CPU/GPU supports.
             Setting this to -1 will leverage CPU, a positive will run the model on the associated CUDA device id.
-    '''
+    """
 
     def __init__(
         self,
@@ -59,6 +60,31 @@ class CkipWordSegmenter:
 
         self.model.to(self.device)
 
+    
+    def prepare(
+        self, input_text: list[list[str]], 
+        delim_set: set[str]=None, 
+        use_delim: bool=False
+    ):
+        """
+        - Collect delimiter indexs.
+        - Convert word into id.
+        """
+        delim_index = set()
+        input_ids_worded = []
+
+        for sent_idx, input_sent in enumerate(input_text):
+            input_sent_ids = []
+            for word_idx, input_word in enumerate(input_sent):
+                input_sent_ids.append(self.tokenizer.convert_tokens_to_ids(list(input_word)))
+                
+                if use_delim and (input_word in delim_set):
+                    delim_index.add((sent_idx, word_idx))
+
+            input_ids_worded.append(input_sent_ids)
+
+        return delim_index, input_ids_worded
+
 
     def __call__(
         self,
@@ -71,7 +97,7 @@ class CkipWordSegmenter:
         show_progress: bool = True,
         pin_memory: bool = True,
     ):
-        '''Call the driver.
+        """Call the driver.
         Parameters
         ----------
             input_text : ``list[str]`` or ``list[list[str]]``
@@ -90,31 +116,23 @@ class CkipWordSegmenter:
             pin_memory : ``bool``, *optional*, defaults to True
                 Pin memory in order to accelerate the speed of data transfer to the GPU. This option is
                 incompatible with multiprocessing.
-        '''
+        """
 
         model_max_length = self.tokenizer.model_max_length - 2  # Add [CLS] and [SEP]
-        if max_length:
-            assert max_length < model_max_length, (
-                'Sequence length is longer than the maximum sequence length for this model '
-                f'({max_length} > {model_max_length}).'
-            )
+        if max_length and not (max_length < model_max_length):
+            raise Exception('Sequence length is longer than the maximum sequence length for this model')
         else:
             max_length = model_max_length
 
-        # Apply delimiter cut
-        delim_index = self._find_delim(
-            input_text=input_text,
+        delim_index, input_ids_worded = self.prepare(
+            input_text=input_text, 
+            delim_set=set(delim_set), 
             use_delim=use_delim,
-            delim_set=delim_set,
         )
 
         # Get worded input IDs
         if show_progress:
             input_text = tqdm.tqdm(input_text, desc='Tokenization')
-
-        input_ids_worded = [
-            [self.tokenizer.convert_tokens_to_ids(list(input_word)) for input_word in input_sent] for input_sent in input_text
-        ]
 
         # Flatten input IDs
         (input_ids, index_map,) = self._flatten_input_ids(
@@ -124,7 +142,7 @@ class CkipWordSegmenter:
         )
 
         # Pad and segment input IDs
-        (input_ids, attention_mask,) = self._pad_input_ids(
+        input_ids, attention_mask = self._pad_input_ids(
             input_ids=input_ids,
         )
 
@@ -187,25 +205,6 @@ class CkipWordSegmenter:
             output_text.append(output_sent)
 
         return output_text
-
-
-    @staticmethod
-    def _find_delim(
-        *,
-        input_text,
-        use_delim,
-        delim_set,
-    ):
-        if not use_delim:
-            return set()
-
-        delim_index = set()
-        delim_set = set(delim_set)
-        for sent_idx, input_sent in enumerate(input_text):
-            for word_idx, input_word in enumerate(input_sent):
-                if input_word in delim_set:
-                    delim_index.add((sent_idx, word_idx))
-        return delim_index
 
 
     @staticmethod
