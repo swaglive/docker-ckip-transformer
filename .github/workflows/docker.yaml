@@ -21,8 +21,6 @@ jobs:
         - bert-tiny
         - albert-base
         - albert-tiny
-        version:
-        - "0.3.2"
 
     steps:
     - name: Checkout
@@ -69,8 +67,6 @@ jobs:
         flavor: |-
           latest=false
           suffix=-${{ matrix.model }}
-        tags: |-
-          type=semver,pattern={{major}}.{{minor}}.{{patch}},value=${{ matrix.version }}
 
     - name: Build
       uses: docker/build-push-action@v3
@@ -79,7 +75,6 @@ jobs:
         context: .
         platforms: linux/amd64,linux/arm64
         build-args: |
-          version=${{ matrix.version }}
           model=${{ matrix.model }}
         push: true
         labels: ${{ steps.meta.outputs.labels }}
